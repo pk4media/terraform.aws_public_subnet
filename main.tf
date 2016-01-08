@@ -6,6 +6,10 @@ resource "aws_internet_gateway" "public" {
     Name = "${var.name}"
     Environment = "${var.environment}"
   }
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 # Create the VPC Public Subnets in the specified VPC
@@ -47,6 +51,10 @@ resource "aws_route_table" "public" {
     Environment = "${var.environment}"
     Service     = "public subnet"
   }
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 # Associate the Public Subnets to the Internet Gateway route table
@@ -55,4 +63,8 @@ resource "aws_route_table_association" "public" {
 
   subnet_id = "${element(aws_subnet.public.*.id, count.index)}"
   route_table_id = "${aws_route_table.public.id}"
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
